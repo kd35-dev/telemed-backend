@@ -83,10 +83,7 @@ The backend follows a **layered architecture** to maintain separation of concern
 ### Module 5 – Doctor Recommendation
 - Suggest specialists based on symptoms
 
-### Module 6 – Appointment Slot System
-- Show available consultation slots
-
-### Module 7 – Symptom Logging
+### Module 6 – Symptom Logging
 - Store symptom requests for analytics
 
 ---
