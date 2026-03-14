@@ -26,4 +26,8 @@ public class DoctorService {
     public List<Doctors> getDoctorsBySpecialization(String specialization){
         return doctorRepository.findBySpecialization(specialization);
     }
+
+//    public List<Doctors> recommendDoctors(String specialization){
+//        return doctorRepository.findBySpecialization(specialization);
+//    }
 }
