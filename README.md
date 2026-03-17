@@ -86,6 +86,8 @@ The backend follows a **layered architecture** to maintain separation of concern
 ### Module 6 – Symptom Logging
 - Store symptom requests for analytics
 
+### Module 7 - Admin Authentication
+- Implemented JWT-based admin authentication and secured doctor management endpoints
 ---
 
 ### Development Workflow
