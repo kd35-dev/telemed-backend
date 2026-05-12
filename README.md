@@ -108,6 +108,25 @@ The backend follows a **layered architecture** to maintain separation of concern
 
 ---
 
+## Configuration (local & production)
+
+Secrets and credentials are **not** stored in `application.properties`. Copy `env.example` to `.env` (or export variables in your shell) and set at least:
+
+- `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`
+- `JWT_SECRET`
+- `AI_API_KEY`
+
+Optional: `GOOGLE_PLACES_API_KEY`, `CORS_ALLOWED_ORIGINS` (comma-separated; add your production frontend DNS).
+
+- **Default profile:** `dev` (`spring.profiles.default=dev`) — JPA `ddl-auto=update` for local iteration.
+- **Production:** set `SPRING_PROFILES_ACTIVE=prod` for stricter JPA settings and Actuator health probes.
+
+GKE, Kubernetes Secrets, DNS, and ConfigMaps are documented in **`docs/DEPLOYMENT-GKE.md`**. The **Kubernetes / DevOps** layout (Kustomize, Ingress, HPA, PDB, Services) is under **`k8s/`** — start with **`k8s/README.md`**.
+
+**Docker:** build/push to **Artifact Registry**, **`docker-compose`** local stack → **`docs/DOCKER.md`** (repo root `docker-compose.yml`).
+
+---
+
 ### Future Improvements
 
 - User authentication

@@ -24,8 +24,13 @@ public class JwtUtil {
     }
 
     public String generateToken(String username) {
+        return generateToken(username, "ADMIN");
+    }
+
+    public String generateToken(String username, String role) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("role", role != null ? role : "ADMIN")
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -36,6 +41,12 @@ public class JwtUtil {
         return extractAllClaims(token).getSubject();
     }
 
+    public String extractRole(String token) {
+        Claims claims = extractAllClaims(token);
+        String role = claims.get("role", String.class);
+        return role != null ? role : "ADMIN";
+    }
+
     public boolean isTokenValid(String token, String username) {
         return extractUsername(token).equals(username) && !isTokenExpired(token);
     }
@@ -44,7 +55,7 @@ public class JwtUtil {
         return extractAllClaims(token).getExpiration().before(new Date());
     }
 
-    private Claims extractAllClaims(String token) {
+    protected Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()

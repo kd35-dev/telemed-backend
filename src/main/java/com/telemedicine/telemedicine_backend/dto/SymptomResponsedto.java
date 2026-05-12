@@ -9,6 +9,7 @@ public class SymptomResponsedto {
     private String severity;
     private String recommendSpecialization;
     private List<Doctors> recommenddoctors;
+    private List<ExternalDoctorDTO> externalDoctors;
 
     public SymptomResponsedto(){}
 
@@ -49,5 +50,13 @@ public class SymptomResponsedto {
 
     public void setRecommenddoctors(List<Doctors> recommenddoctors) {
         this.recommenddoctors = recommenddoctors;
+    }
+
+    public List<ExternalDoctorDTO> getExternalDoctors() {
+        return externalDoctors;
+    }
+
+    public void setExternalDoctors(List<ExternalDoctorDTO> externalDoctors) {
+        this.externalDoctors = externalDoctors;
     }
 }

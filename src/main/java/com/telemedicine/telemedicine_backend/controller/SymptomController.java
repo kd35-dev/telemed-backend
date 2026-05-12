@@ -23,7 +23,7 @@ public class SymptomController {
 
     @PostMapping("/analysis")
     public ResponseEntity<ApiResponse<SymptomResponsedto>> analysisSymptom(@Valid @RequestBody SymptomRequestdto request){
-        SymptomResponsedto symptomresponse = symptomService.analyzeSymptom(request.getSymptoms());
+        SymptomResponsedto symptomresponse = symptomService.analyzeSymptom(request);
         ApiResponse<SymptomResponsedto> response = new ApiResponse<>(true,symptomresponse);
         return ResponseEntity.ok(response);
     }
