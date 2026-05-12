@@ -1,0 +1,11 @@
+# Railway config-as-code. In the Railway service, set Root Directory to: telemedicine-backend
+# https://docs.railway.com/develop/config-as-code
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+healthcheckPath = "/actuator/health"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
