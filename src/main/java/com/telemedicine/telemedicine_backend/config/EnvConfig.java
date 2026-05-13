@@ -26,7 +26,7 @@ public class EnvConfig {
             String key = entry.getKey();
             String value = entry.getValue();
 
-            // Prefer process environment (Railway, Docker, shell) over .env
+            // Prefer process environment (Railway, shell) over .env.
             if (System.getenv(key) != null) {
                 return;
             }
@@ -35,6 +35,5 @@ public class EnvConfig {
             }
         });
 
-        System.out.println("✅ Environment variables loaded from .env file");
     }
 }

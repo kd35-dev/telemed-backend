@@ -71,14 +71,6 @@ public class AuthService {
         registerAccount(username, rawPassword, "ADMIN", displayName);
     }
 
-    public void registerDoctor(String username, String rawPassword, String displayName) {
-        registerAccount(username, rawPassword, "DOCTOR", displayName);
-    }
-
-    public void registerPatient(String username, String rawPassword, String displayName) {
-        registerAccount(username, rawPassword, "PATIENT", displayName);
-    }
-
     private void registerAccount(String username, String rawPassword, String role, String displayName) {
         if (adminRepository.findByUsername(username).isPresent()) {
             throw new RuntimeException("Account already exists with username: " + username);

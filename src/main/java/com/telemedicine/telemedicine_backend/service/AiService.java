@@ -8,6 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 
@@ -17,8 +19,10 @@ import java.util.Map;
 @Service
 public class AiService {
 
-    private AiConfig aiConfig;
-    private RestTemplate restTemplate;
+    private static final Logger logger = LoggerFactory.getLogger(AiService.class);
+
+    private final AiConfig aiConfig;
+    private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
     public AiService(AiConfig aiConfig, RestTemplate restTemplate, ObjectMapper objectMapper) {
@@ -63,7 +67,6 @@ Symptoms: """ + symptom);
 
         try {
             String response = restTemplate.postForObject(aiConfig.getAiApiUrl(), httpEntity, String.class);
-//            System.out.println("Raw Json Response: " + response);
             JsonNode root = objectMapper.readTree(response);
 
             String extractedText = root
@@ -78,14 +81,13 @@ Symptoms: """ + symptom);
             String advice = extractedTextroot.path("advice").asText();
             String severity = extractedTextroot.path("severity").asText();
 
-            System.out.println("Extracted Text: " + extractedText);
             return new AiAnalysisResponseDTO(
                     condition,
                     severity,
                     advice
             );
         } catch (RestClientException e) {
-            System.out.println("Groq API call failed: " + e.getMessage());
+            logger.warn("Groq API call failed: {}", e.getMessage());
         }
         return new AiAnalysisResponseDTO("Unknown Condition",
                 "Unknown Severity",

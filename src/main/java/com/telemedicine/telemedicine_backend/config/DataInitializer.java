@@ -1,7 +1,10 @@
 package com.telemedicine.telemedicine_backend.config;
 
-import com.telemedicine.telemedicine_backend.service.AuthService;
 import com.telemedicine.telemedicine_backend.repository.AdminRepository;
+import com.telemedicine.telemedicine_backend.service.AuthService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,42 +12,36 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DataInitializer {
 
+    private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
+
+    @Value("${app.default-admin.username:}")
+    private String defaultAdminUsername;
+
+    @Value("${app.default-admin.password:}")
+    private String defaultAdminPassword;
+
+    @Value("${app.default-admin.display-name:Administrator}")
+    private String defaultAdminDisplayName;
+
     @Bean
     public CommandLineRunner createDefaultAdmin(AuthService authService, AdminRepository adminRepository) {
         return args -> {
-            // Admin account
-            try {
-                authService.registerAdmin("admin", "admin123", "Administrator");
-                System.out.println("✓ Default admin created — username: admin, password: admin123");
-            } catch (RuntimeException e) {
+            if (!isBlank(defaultAdminUsername) && !isBlank(defaultAdminPassword)) {
                 try {
-                    // Try to update existing admin account
-                    var admin = adminRepository.findByUsername("admin");
-                    if (admin.isPresent()) {
-                        System.out.println("✓ Admin account already exists");
+                    authService.registerAdmin(defaultAdminUsername, defaultAdminPassword, defaultAdminDisplayName);
+                    logger.info("Default admin account created.");
+                } catch (RuntimeException e) {
+                    if (adminRepository.findByUsername(defaultAdminUsername).isPresent()) {
+                        logger.info("Default admin account already exists.");
                     } else {
-                        System.out.println("✗ Error creating admin: " + e.getMessage());
+                        throw e;
                     }
-                } catch (Exception ex) {
-                    System.out.println("✗ Error: " + ex.getMessage());
                 }
             }
-
-            // Doctor account
-            try {
-                authService.registerDoctor("doctor", "doctor123", "Dr. Demo Doctor");
-                System.out.println("✓ Default doctor account created — username: doctor, password: doctor123");
-            } catch (RuntimeException e) {
-                System.out.println("✓ Doctor account already exists, skipping creation.");
-            }
-
-            // Patient account
-            try {
-                authService.registerPatient("patient", "patient123", "Demo Patient");
-                System.out.println("✓ Default patient account created — username: patient, password: patient123");
-            } catch (RuntimeException e) {
-                System.out.println("✓ Patient account already exists, skipping creation.");
-            }
         };
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.isBlank();
     }
 }

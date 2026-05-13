@@ -1,143 +1,62 @@
-# Telemedicine Access for Healthcare (Backend)
+# Telemedicine Backend
 
-A backend system for a telemedicine platform that analyzes user symptoms using an external AI service and recommends medical guidance and doctors based on severity.
-
-This project is built using **Java and Spring Boot** to practice backend system design, REST API development, and scalable service architecture.
-
----
-
-## Project Overview
-
-The platform allows users to enter symptoms and receive AI-assisted analysis.  
-Based on the severity of the condition, the system may suggest consulting a doctor and recommend specialists with available appointment slots.
-
-The backend serves as the **core processing layer** that:
-- receives user symptom inputs
-- integrates with an external AI API
-- processes medical logic
-- recommends doctors and consultation times
-
----
-
-## Key Features
-
-- AI-powered symptom analysis
-- Severity classification for symptoms
-- Doctor recommendation based on specialization
-- Appointment slot suggestions
-- Structured REST API responses
-- Input validation and error handling
-- Modular backend architecture
-- Scalable service-layer design
-
----
+Spring Boot backend for a telemedicine platform. It analyzes symptoms with an external AI API, classifies severity, recommends specialists, manages doctors, allocates slots, books appointments, and exposes admin/audit APIs.
 
 ## Tech Stack
 
-### Backend
-- Java 17+
-- Spring Boot
-
-### API Development
-- REST APIs
-- Spring Web
-
-### Database
-- MongoDB
-
-### Tools
+- Java 21
+- Spring Boot 4
 - Maven
-- Postman
-- Git & GitHub
+- PostgreSQL
+- JWT authentication
+- Groq AI API
+- Google Places API, optional
 
----
+## Configuration
 
-## Backend Architecture
+Secrets are not stored in `application.properties`. Copy `env.example` to `.env` for local development or set the same variables in your cloud provider.
 
-The backend follows a **layered architecture** to maintain separation of concerns.
+Required:
 
-
----
-
-## Modules
-
-### Module 1 – Backend Foundation
-- Project setup
-- Controller layer
-- DTO structure
-- Service layer
-- Request validation
-- API response wrapper
-
-### Module 2 – AI Integration
-- External AI API connection
-- Symptom analysis
-
-### Module 3 – Severity Logic
-- Medical severity classification
-
-### Module 4 – Doctor Management
-- Doctor data storage
-- Doctor APIs
-
-### Module 5 – Doctor Recommendation
-- Suggest specialists based on symptoms
-
-### Module 6 – Symptom Logging
-- Store symptom requests for analytics
-
-### Module 7 - Admin Authentication
-- Implemented JWT-based admin authentication and secured doctor management endpoints
----
-
-### Development Workflow
-
-- Design API contract
-
-- Implement controller layer
-
-- Implement service logic
-
-- Integrate database
-
-- Add external AI integration
-
-- Test APIs using Postman
-
-- Push code to GitHub
-
----
-
-## Configuration (local & production)
-
-Secrets and credentials are **not** stored in `application.properties`. Copy `env.example` to `.env` (or export variables in your shell) and set at least:
-
-- `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`
+- `SPRING_DATASOURCE_URL`
+- `SPRING_DATASOURCE_USERNAME`
+- `SPRING_DATASOURCE_PASSWORD`
 - `JWT_SECRET`
 - `AI_API_KEY`
 
-Optional: `GOOGLE_PLACES_API_KEY`, `CORS_ALLOWED_ORIGINS` (comma-separated; add your production frontend DNS).
+Optional:
 
-- **Default profile:** `dev` (`spring.profiles.default=dev`) — JPA `ddl-auto=update` for local iteration.
-- **Production:** set `SPRING_PROFILES_ACTIVE=prod` for stricter JPA settings and Actuator health probes.
+- `JWT_EXPIRATION_MS`
+- `GOOGLE_PLACES_API_KEY`
+- `CORS_ALLOWED_ORIGINS`
+- `APP_DEFAULT_ADMIN_USERNAME`
+- `APP_DEFAULT_ADMIN_PASSWORD`
+- `APP_DEFAULT_ADMIN_DISPLAY_NAME`
+- `SPRING_PROFILES_ACTIVE=prod`
 
-GKE, Kubernetes Secrets, DNS, and ConfigMaps are documented in **`docs/DEPLOYMENT-GKE.md`**. The **Kubernetes / DevOps** layout (Kustomize, Ingress, HPA, PDB, Services) is under **`k8s/`** — start with **`k8s/README.md`**.
+Use `APP_DEFAULT_ADMIN_USERNAME` and `APP_DEFAULT_ADMIN_PASSWORD` only to create the first admin account on an empty database. After the first login and password change, remove `APP_DEFAULT_ADMIN_PASSWORD` from production variables.
 
-**Docker:** build/push to **Artifact Registry**, **`docker-compose`** local stack → **`docs/DOCKER.md`** (repo root `docker-compose.yml`).
+## Local Build
 
----
+```bash
+mvn -DskipTests package
+```
 
-### Future Improvements
+The packaged jar is written to:
 
-- User authentication
+```text
+target/app.jar
+```
 
-- Patient medical history
+## Railway Deployment
 
-- Appointment booking
+Set the Railway service root to this backend folder. Railway can auto-detect the Maven/Spring Boot app from `pom.xml`; no Dockerfile is required.
 
-- Admin dashboard
+Set production variables in Railway, especially:
 
-- Notification system
+```text
+SPRING_PROFILES_ACTIVE=prod
+CORS_ALLOWED_ORIGINS=https://your-vercel-frontend-url.vercel.app
+```
 
-- Improved AI diagnosis accuracy
----
+If your production database is empty and you do not have migrations yet, create the schema first or temporarily use the dev profile for the first boot, then switch back to `prod`.
