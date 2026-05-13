@@ -1,4 +1,4 @@
-# Railway config-as-code. In the Railway service, set Root Directory to: telemedicine-backend
+# Railway config-as-code (repo root = this backend project).
 # https://docs.railway.com/develop/config-as-code
 
 [build]

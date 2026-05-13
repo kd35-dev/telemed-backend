@@ -115,6 +115,8 @@
 	</dependencies>
 
 	<build>
+		<!-- Stable JAR name for Docker COPY (avoids version-globs / multiple *.jar) -->
+		<finalName>app</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
